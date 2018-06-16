@@ -1,0 +1,19 @@
+= Overview
+
+An attempt to make http4s run with scalaz.
+
+== http4ssample
+
+This is a working example.
+
+    $ sbt run
+    $ curl http://localhost:8080/hello/world
+      {"message":"Hello, world"}
+ 
+== scratchapi
+
+This is a scalaz version that HANGS.
+
+    $ sbt run
+
+Hangs here: https://github.com/scalaz/ioeffect/blob/master/ioeffect/src/main/scala/scalaz/ioeffect/RTS.scala#L68
