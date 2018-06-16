@@ -1,8 +1,5 @@
 package scratch.api
 
-import shims._
-import scalaz.ioeffect.Task
-import scalaz.ioeffect.catz._
 import cats.effect.Effect
 import cats.implicits._
 
