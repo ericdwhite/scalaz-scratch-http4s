@@ -1,30 +1,34 @@
 package scratch.api
 
-import shims._
-import scalaz.ioeffect.Task
-import scalaz.ioeffect.catz._
 import cats.effect.Effect
-import cats.implicits._
-
-import fs2.StreamApp
+import cats.syntax.functor._
+import org.http4s.HttpService
+import org.http4s.dsl.Http4sDsl
 import org.http4s.server.blaze.BlazeBuilder
-import scala.concurrent.ExecutionContext
 
-object App extends StreamApp[Task] {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  import scala.concurrent.ExecutionContext.Implicits.global
-
-  override def stream(args: List[String], requestShutdown: Task[Unit]) = ServerStream.stream[Task]
+trait Srv[F[_]] {
+  def start: F[_]
 }
 
-object ServerStream {
+object Srv {
 
-  def helloWorldService[F[_]: Effect] = new HelloWorldService[F].service
+  def default[F[_]: Effect]: Srv[F] = new Http4sServer[F]()
 
-  def stream[F[_]: Effect](implicit ec: ExecutionContext) = for {
-    init <- BlazeBuilder[F]
-      .bindHttp(9090, "0.0.0.0")
-      .mountService(helloWorldService, "/")
-      .serve
-  } yield init
+  //def helloWorldService[F[_]: Effect] = new HelloWorldService[F].service
+
+  class Http4sServer[F[_]: Effect] extends Srv[F] with Http4sDsl[F] {
+
+    override def start: F[_] = 
+      BlazeBuilder[F]
+        .bindHttp(9090, "127.0.0.1")
+        .mountService(service, "/")
+        .start
+        //.mountService(helloWorldService, "/")
+
+    private def service: HttpService[F] = HttpService[F] {
+      case GET -> Root / "ping" => Ok("pong")
+    }
+  }
 }

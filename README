@@ -16,4 +16,6 @@ This is a scalaz version that HANGS.
 
     $ sbt run
 
-Hangs here: https://github.com/scalaz/ioeffect/blob/master/ioeffect/src/main/scala/scalaz/ioeffect/RTS.scala#L68
+    http://127.0.0.1:9090/ping\
+    pong
+
